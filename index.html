@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cooking For Future</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --green: #2d6a4f;
+    --light-green: #52b788;
+    --cream: #fefae0;
+    --warm: #dda15e;
+    --dark: #1b1b1b;
+    --text: #333;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Georgia', serif; background: var(--cream); color: var(--text); }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%; background: rgba(45,106,79,0.97);
+    z-index: 100; padding: 14px 40px; display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  }
+  nav .logo { color: #fff; font-size: 1.3rem; letter-spacing: 1px; font-style: italic; }
+  nav ul { list-style: none; display: flex; gap: 24px; flex-wrap: wrap; }
+  nav ul li a { color: #d8f3dc; text-decoration: none; font-size: 0.85rem; font-family: Arial, sans-serif; letter-spacing: 0.5px; transition: color 0.2s; }
+  nav ul li a:hover { color: #fff; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: linear-gradient(160deg, #1b4332 0%, #2d6a4f 50%, #52b788 100%);
+    text-align: center; padding: 100px 20px 60px;
+  }
+  .hero .leaf { font-size: 4rem; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); color: #fff; letter-spacing: 3px; margin-bottom: 10px; }
+  .hero .subtitle { color: #d8f3dc; font-size: 1.1rem; font-style: italic; margin-bottom: 30px; }
+  .hero .tagline {
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.3);
+    color: #fff; padding: 14px 32px; border-radius: 40px; font-size: 0.95rem;
+    font-family: Arial, sans-serif; letter-spacing: 0.5px;
+  }
+  .scroll-hint { margin-top: 50px; color: rgba(255,255,255,0.6); font-size: 0.8rem; font-family: Arial,sans-serif; }
+  .scroll-hint span { display: block; font-size: 1.5rem; margin-top: 6px; animation: bounce 1.5s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+
+  /* SECTIONS */
+  section { padding: 80px 40px; max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    display: inline-block; background: var(--green); color: #fff;
+    font-size: 0.75rem; letter-spacing: 2px; font-family: Arial,sans-serif;
+    padding: 5px 16px; border-radius: 20px; margin-bottom: 16px; text-transform: uppercase;
+  }
+  h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--green); margin-bottom: 24px; }
+  .divider { width: 60px; height: 3px; background: var(--warm); border-radius: 2px; margin-bottom: 32px; }
+
+  /* EINLEITUNG */
+  #einleitung { background: #fff; border-radius: 20px; margin: 80px auto; padding: 60px; box-shadow: 0 4px 30px rgba(0,0,0,0.07); }
+  #einleitung p { font-size: 1.05rem; line-height: 1.9; color: #444; margin-bottom: 16px; }
+  .ueber-uns {
+    margin-top: 40px; padding: 32px; background: #f0faf4; border-left: 4px solid var(--light-green);
+    border-radius: 0 12px 12px 0;
+  }
+  .ueber-uns h3 { color: var(--green); font-size: 1.4rem; margin-bottom: 14px; }
+  .ueber-uns p { font-size: 0.98rem; line-height: 1.8; color: #555; }
+  .ueber-uns .sig { margin-top: 16px; font-style: italic; color: var(--green); font-weight: bold; }
+
+  /* CATEGORY SECTIONS */
+  .cat-section { padding: 80px 0; }
+  .cat-header {
+    display: flex; align-items: center; gap: 16px;
+    background: linear-gradient(135deg, var(--green), var(--light-green));
+    color: #fff; padding: 28px 40px; border-radius: 16px; margin-bottom: 40px;
+  }
+  .cat-header .icon { font-size: 2.5rem; }
+  .cat-header h2 { color: #fff; margin: 0; font-size: 2rem; }
+
+  /* RECIPE CARDS */
+  .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px; }
+  .card {
+    background: #fff; border-radius: 16px; overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,0,0,0.13); }
+  .card-top {
+    background: linear-gradient(135deg, #e9f5ec, #d8f3dc);
+    padding: 24px; text-align: center; font-size: 3rem;
+  }
+  .card-body { padding: 22px; }
+  .card-body h3 { color: var(--green); font-size: 1.1rem; margin-bottom: 8px; line-height: 1.4; }
+  .card-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  .badge {
+    font-size: 0.72rem; font-family: Arial,sans-serif; padding: 4px 10px;
+    border-radius: 12px; background: #f0faf4; color: var(--green); border: 1px solid #b7e4c7;
+  }
+  .badge.kcal { background: #fff8ee; color: #a0522d; border-color: #f4d03f; }
+  .card-body .expand-btn {
+    width: 100%; background: var(--green); color: #fff; border: none; border-radius: 8px;
+    padding: 10px; font-family: Arial,sans-serif; font-size: 0.85rem; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .card-body .expand-btn:hover { background: var(--light-green); }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    z-index: 200; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #fff; border-radius: 20px; max-width: 640px; width: 100%;
+    max-height: 85vh; overflow-y: auto; padding: 40px; position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .modal-close {
+    position: absolute; top: 16px; right: 20px; background: none; border: none;
+    font-size: 1.8rem; cursor: pointer; color: #999; line-height: 1;
+  }
+  .modal h2 { color: var(--green); margin-bottom: 8px; font-size: 1.5rem; }
+  .modal .modal-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+  .modal h4 { color: var(--green); margin: 20px 0 10px; font-size: 1rem; font-family: Arial,sans-serif; text-transform: uppercase; letter-spacing: 1px; }
+  .modal ul { padding-left: 20px; }
+  .modal ul li { margin-bottom: 6px; font-size: 0.95rem; line-height: 1.6; }
+  .modal ol { padding-left: 20px; }
+  .modal ol li { margin-bottom: 10px; font-size: 0.95rem; line-height: 1.7; }
+
+  /* INFO */
+  #informationen {
+    background: linear-gradient(135deg, #1b4332, #2d6a4f);
+    border-radius: 20px; margin: 40px auto 80px; padding: 60px;
+    color: #d8f3dc;
+  }
+  #informationen .section-label { background: rgba(255,255,255,0.2); }
+  #informationen h2 { color: #fff; }
+  #informationen .divider { background: var(--warm); }
+  #informationen p { line-height: 1.9; font-size: 1rem; margin-bottom: 18px; color: #d8f3dc; }
+  #informationen .info-highlight {
+    background: rgba(255,255,255,0.1); border-radius: 12px; padding: 24px;
+    margin-top: 28px; border: 1px solid rgba(255,255,255,0.2);
+  }
+  #informationen .info-highlight h3 { color: #fff; margin-bottom: 12px; }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark); color: #aaa; text-align: center;
+    padding: 30px 20px; font-family: Arial,sans-serif; font-size: 0.85rem;
+  }
+  footer span { color: var(--light-green); }
+
+  @media(max-width:600px) {
+    nav { padding: 12px 16px; }
+    nav ul { gap: 12px; }
+    section, #einleitung, #informationen { padding: 40px 20px; }
+    .cat-header { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">🌿 Cooking For Future</div>
+  <ul>
+    <li><a href="#einleitung">Einleitung</a></li>
+    <li><a href="#fruehstueck">Frühstück</a></li>
+    <li><a href="#salate">Salate</a></li>
+    <li><a href="#warme">Warme Speisen</a></li>
+    <li><a href="#desserts">Desserts</a></li>
+    <li><a href="#informationen">Infos</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="leaf">🌱</div>
+  <h1>Cooking For Future</h1>
+  <p class="subtitle">Ein nachhaltiges Kochbuch von vier Schülerinnen des BG Gallus</p>
+  <div class="tagline">Klimafreundlich kochen – lecker & einfach</div>
+  <div class="scroll-hint">Entdecke die Rezepte <span>↓</span></div>
+</div>
+
+<!-- EINLEITUNG -->
+<section>
+<div id="einleitung">
+  <span class="section-label">Willkommen</span>
+  <h2>Einleitung</h2>
+  <p>Essen verbindet uns – mit unserer Familie, unseren Freunden und unserer Erde. Mit diesem Kochbuch möchten wir zeigen, dass gutes Essen auch klimafreundlich sein kann. Kleine Entscheidungen in der Küche können einen großen Unterschied machen. Wenn wir regional einkaufen, weniger verschwenden und bewusst kochen, helfen wir unserer Umwelt und unserer Zukunft.</p>
+  <p>Die Rezepte in diesem Buch sind gesund, nachhaltig und einfach nachzukochen. Sie sollen zeigen, dass klimafreundliches Essen lecker ist und Spaß macht. Jeder Teller zählt – und gemeinsam können wir etwas verändern.</p>
+  <p><strong>Viel Freude beim Kochen für die Zukunft!</strong></p>
+
+  <div class="ueber-uns">
+    <h3>🧑‍🍳 Über uns</h3>
+    <p>Wir sind vier Schülerinnen aus dem BG Gallus. Für das <em>kidz_21</em> Projekt haben wir uns entschieden, ein Kochbuch zu erstellen, da es uns wichtig ist, mehr auf die Umwelt zu achten und nachhaltig zu kochen.</p>
+    <p>Dieses Projekt hat uns gezeigt, dass nachhaltiges Essen sehr einfach und auch sehr lecker sein kann. Wir hoffen, dass unsere Ideen euch inspirieren und zeigen, dass jeder kleine Schritt zählt.</p>
+    <p class="sig">Liebe Grüße – Euer Cooking-For-Future Team 🌍</p>
+  </div>
+</div>
+</section>
+
+<!-- FRÜHSTÜCK -->
+<section>
+<div id="fruehstueck" class="cat-section">
+  <div class="cat-header">
+    <span class="icon">🌅</span>
+    <h2>Frühstück</h2>
+  </div>
+  <div class="recipe-grid">
+    <div class="card" onclick="openModal('porridge')">
+      <div class="card-top">🥣</div>
+      <div class="card-body">
+        <h3>Vanille-Hafer-Porridge mit Leinsamen & Apfel</h3>
+        <div class="card-meta">
+          <span class="badge kcal">434 kcal</span>
+          <span class="badge">⏱ 15 Min</span>
+          <span class="badge">🟢 Leicht</span>
+        </div>
+        <button class="expand-btn">Rezept ansehen →</button>
+      </div>
+    </div>
+    <div class="card" onclick="openModal('topfenbrot')">
+      <div class="card-top">🍞</div>
+      <div class="card-body">
+        <h3>Kräuter-Topfen-Brot</h3>
+        <div class="card-meta">
+          <span class="badge kcal">460 kcal</span>
+          <span class="badge">⏱ 10 Min</span>
+          <span class="badge">🟢 Leicht</span>
+        </div>
+        <button class="expand-btn">Rezept ansehen →</button>
+      </div>
+    </div>
+    <div class="card" onclick="openModal('ruehrei')">
+      <div class="card-top">🍳</div>
+      <div class="card-body">
+        <h3>Rührei mit Gemüse</h3>
+        <div class="card-meta">
+          <span class="badge kcal">370–400 kcal</span>
+          <span class="badge">⏱ 20 Min</span>
+          <span class="badge">🟢 Leicht</span>
+        </div>
+        <button class="expand-btn">Rezept ansehen →</button>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- SALATE -->
+<section>
+<div id="salate" class="cat-section">
+  <div class="cat-header">
+    <span class="icon">🥗</span>
+    <h2>Salate</h2>
+  </div>
+  <div class="recipe-grid">
+    <div class="card" onclick="openModal('gurkensalat')">
+      <div class="card-top">🥒</div>
+      <div class="card-body">
+        <h3>Gurken-Radieschen-Tomaten-Salat</h3>
+        <div class="card-meta">
+          <span class="badge kcal">199 kcal</span>
+          <span class="badge">⏱ 15 Min</span>
+          <span class="badge">🟢 Leicht</span>
+        </div>
+        <button class="expand-btn">Rezept ansehen →</button>
+      </div>
+    </div>
+    <div class="card" onclick="openModal('saisonsalat')">
+      <div class="card-top">🥗</div>
+      <div class="card-body">
+        <h3>Saison Salat</h3>
+        <div class="card-meta">
+          <span class="badge kcal">250 kcal</span>
+          <span class="badge">⏱ 15 Min</span>
+          <span class="badge">🟢 Leicht</span>
+        </div>
+        <button class="expand-btn">Rezept ansehen →</button>
+      </div>
+    </div>
+    <div class="card" onclick="openModal('kartoffelsalat')">
+      <div class="card-top">🥔</div>
+      <div class="card-body">
+        <h3>Kartoffelsalat</h3>
+        <div class="card-meta">
+          <span class="badge kcal">447 kcal</span>
+          <span class="badge">⏱ 35 Min</span>
+          <span class="badge">🟢 Leicht</span>
+        </div>
+        <button class="expand-btn">Rezept ansehen →</button>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- WARME SPEISEN -->
+<section>
+<div id="warme" class="cat-section">
+  <div class="cat-header">
+    <span class="icon">🍲</span>
+    <h2>Warme Speisen</h2>
+  </div>
+  <div class="recipe-grid">
+    <div class="card" onclick="openModal('kurbispasta')">
+      <div class="card-top">🎃</div>
+      <div class="card-body">
+        <h3>Kürbis Pasta</h3>
+        <div class="card-meta">
+          <span class="badge kcal">384 kcal</span>
+          <span class="badge">⏱ 40 Min</span>
+          <span class="badge">🟢 Leicht</span>
+        </div>
+        <button class="expand-btn">Rezept ansehen →</button>
+      </div>
+    </div>
+    <div class="card" onclick="openModal('hahnchen')">
+      <div class="card-top">🍋</div>
+      <div class="card-body">
+        <h3>Hähnchen mit Zitrone & Kartoffeln</h3>
+        <div class="card-meta">
+          <span class="badge kcal">463 kcal</span>
+          <span class="badge">⏱ 40 Min</span>
+          <span class="badge">🟢 Leicht</span>
+        </div>
+        <button class="expand-btn">Rezept ansehen →</button>
+      </div>
+    </div>
+    <div class="card" onclick="openModal('curry')">
+      <div class="card-top">🍛</div>
+      <div class="card-body">
+        <h3>Gemüse-Kichererbsen-Curry</h3>
+        <div class="card-meta">
+          <span class="badge kcal">397 kcal</span>
+          <span class="badge">⏱ 50 Min</span>
+          <span class="badge">🟢 Leicht</span>
+        </div>
+        <button class="expand-btn">Rezept ansehen →</button>
+      </div>
+    </div>
+    <div class="card" onclick="openModal('teigtaschen')">
+      <div class="card-top">🥟</div>
+      <div class="card-body">
+        <h3>Türkische Teigtaschen mit Joghurtdip</h3>
+        <div class="card-meta">
+          <span class="badge kcal">568 kcal</span>
+          <span class="badge">⏱ 40 Min</span>
+          <span class="badge">🟡 Mittel</span>
+        </div>
+        <button class="expand-btn">Rezept ansehen →</button>
+      </div>
+    </div>
+    <div class="card" onclick="openModal('kurbissuppe')">
+      <div class="card-top">🍜</div>
+      <div class="card-body">
+        <h3>Kürbissuppe mit Hokkaido</h3>
+        <div class="card-meta">
+          <span class="badge kcal">406 kcal</span>
+          <span class="badge">⏱ 25 Min</span>
+          <span class="badge">🟢 Leicht</span>
+        </div>
+        <button class="expand-btn">Rezept ansehen →</button>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- DESSERTS -->
+<section>
+<div id="desserts" class="cat-section">
+  <div class="cat-header">
+    <span class="icon">🍰</span>
+    <h2>Desserts</h2>
+  </div>
+  <div class="recipe-grid">
+    <div class="card" onclick="openModal('apfeltorte')">
+      <div class="card-top">🥧</div>
+      <div class="card-body">
+        <h3>Apfeltorte mit Aprikosenglasur</h3>
+        <div class="card-meta">
+          <span class="badge kcal">276 kcal</span>
+          <span class="badge">⏱ 45 Min</span>
+          <span class="badge">🟢 Leicht</span>
+        </div>
+        <button class="expand-btn">Rezept ansehen →</button>
+      </div>
+    </div>
+    <div class="card" onclick="openModal('gemusechips')">
+      <div class="card-top">🥕</div>
+      <div class="card-body">
+        <h3>Gemüsechips</h3>
+        <div class="card-meta">
+          <span class="badge kcal">~70 kcal/100g</span>
+          <span class="badge">⏱ 30 Min</span>
+          <span class="badge">🟢 Sehr leicht</span>
+        </div>
+        <button class="expand-btn">Rezept ansehen →</button>
+      </div>
+    </div>
+    <div class="card" onclick="openModal('apfeltopfen')">
+      <div class="card-top">🍎</div>
+      <div class="card-body">
+        <h3>Apfel-Topfen Snack</h3>
+        <div class="card-meta">
+          <span class="badge kcal">200 kcal</span>
+          <span class="badge">⏱ 4 Min</span>
+          <span class="badge">🟢 Sehr leicht</span>
+        </div>
+        <button class="expand-btn">Rezept ansehen →</button>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- INFORMATIONEN -->
+<section>
+<div id="informationen">
+  <span class="section-label">Wissen</span>
+  <h2>Informationen</h2>
+  <p>Regionale und saisonale Lebensmittel sind wichtig für den Schutz unseres Klimas und der Umwelt. „Regional" bedeutet, dass die Lebensmittel aus der näheren Umgebung kommen und keine langen Transportwege zurücklegen müssen. Das führt zu weniger schädlichen Abgasen wie CO₂, die das Klima belasten. Außerdem unterstützt man mit dem Kauf regionaler Produkte die heimische Landwirtschaft.</p>
+  <p>„Saisonal" bedeutet, dass Obst und Gemüse dann gegessen werden, wenn sie natürlich wachsen und geerntet werden. Zum Beispiel sind Erdbeeren im Sommer saisonal, während Äpfel im Herbst geerntet werden. Saisonale Lebensmittel müssen nicht in beheizten Gewächshäusern angebaut oder über weite Strecken importiert werden. Das spart Energie und schont die Umwelt.</p>
+  <p>Ein weiterer Vorteil ist, dass regionale und saisonale Lebensmittel oft frischer sind und besser schmecken. Sie enthalten meist auch mehr Nährstoffe, da sie reif geerntet werden können. Zudem fällt oft weniger Verpackungsmüll an, besonders wenn man auf Märkten oder direkt beim Bauern einkauft.</p>
+  <div class="info-highlight">
+    <h3>🌍 Unser Fazit</h3>
+    <p>Durch bewusste Entscheidungen beim Einkaufen kann jeder einen Beitrag zum Umweltschutz leisten. Wer regional und saisonal einkauft, schützt nicht nur das Klima, sondern unterstützt auch nachhaltige Landwirtschaft und die eigene Gesundheit.</p>
+  </div>
+</div>
+</section>
+
+<footer>
+  <p>© 2025 <span>Cooking For Future</span> · BG Gallus · kidz_21 Projekt · Mit 💚 erstellt</p>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+const recipes = {
+  porridge: {
+    emoji: '🥣', title: 'Vanille-Hafer-Porridge mit Leinsamen & Apfel', kcal: '434 kcal', time: 'ca. 15 Minuten', diff: 'Leicht',
+    zutaten: ['150ml Hafermilch','40g Haferflocken','1 Prise Vanillepulver','1 Prise Zimt','1 EL Leinsamen','1 EL Haselnüsse','1 kleiner Apfel'],
+    zubereitung: ['Die Hafermilch zusammen mit den Haferflocken, einer Prise Vanille, Zimt und den Leinsamen in einen Topf geben und zum Kochen bringen. Anschließend etwa 12 Minuten bei niedriger Hitze köcheln lassen, dann vom Herd ziehen und weitere 10 Minuten ruhen lassen, damit der Porridge schön cremig wird.','Die Haselnüsse ohne Fett in einer Pfanne goldbraun rösten. Den Apfel gründlich waschen, halbieren, das Kerngehäuse entfernen und das Fruchtfleisch in kleine Würfel schneiden.','Den fertig gequollenen Porridge in Schalen füllen und mit den Apfelstückchen sowie den gerösteten Nüssen garniert servieren.']
+  },
+  topfenbrot: {
+    emoji: '🍞', title: 'Kräuter-Topfen-Brot', kcal: '460 kcal', time: 'ca. 10 Minuten', diff: 'Leicht',
+    zutaten: ['1 Vollkornbrot','200g Topfen','Etwas Schnittlauch & Petersilie','Paar Radieschen','1 Gurke'],
+    zubereitung: ['Die Kräuter fein hacken und anschließend gründlich unter den Topfen rühren. Nach Geschmack würzen.','Die Kräutercreme gleichmäßig auf das Vollkornbrot streichen und nach Belieben mit frischen Radieschen- oder Gurkenscheiben belegen.']
+  },
+  ruehrei: {
+    emoji: '🍳', title: 'Rührei mit Gemüse', kcal: '370–400 kcal', time: 'ca. 20 Minuten', diff: 'Leicht',
+    zutaten: ['5 Eier','6 EL Sahne','Etwas Schnittlauch','Etwas Bergkäse','1 Prise Olivenöl','Gemüse nach Wahl (z.B. Paprika, Gurke)','Salz & Pfeffer'],
+    zubereitung: ['Das Gemüse in mundgerechte Stücke schneiden und in der Pfanne mit etwas Öl bei starker Hitze kurz scharf anbraten.','Die Eier zusammen mit der Sahne kräftig verquirlen, mit Salz und Pfeffer abschmecken und über das angebratene Gemüse gießen.','Die Temperatur zurückdrehen und Schnittlauch sowie weitere Kräuter nach Belieben hinzugeben.','Zuletzt den geriebenen Bergkäse unterheben und das Rührei sofort servieren.']
+  },
+  gurkensalat: {
+    emoji: '🥒', title: 'Gurken-Radieschen-Tomaten-Salat', kcal: '199 kcal', time: 'ca. 15 Minuten', diff: 'Leicht',
+    zutaten: ['1½ Salatgurken','1 Bund Radieschen','1 Bund Rucola','250g Kirschtomaten','4 EL Olivenöl','3 EL Zitronensaft','1 TL Senf','1 TL Honig','Salz & Pfeffer','40g Pinienkerne','½ Bund Basilikum'],
+    zubereitung: ['Die Gurke in gleichmäßige Würfel schneiden, die Radieschen in feine Scheiben hobeln und den Rucola unter fließendem Wasser waschen.','Für das Dressing Olivenöl, Zitronensaft, Senf und Honig miteinander verrühren und kräftig abschmecken.','Sämtliche vorbereiteten Zutaten in einer großen Schüssel mit dem Dressing vermengen.','Die Pinienkerne in einer trockenen Pfanne etwa 3 Minuten goldbraun rösten. Den Salat mit frischem Basilikum bestreut anrichten.']
+  },
+  saisonsalat: {
+    emoji: '🥗', title: 'Saison Salat', kcal: '250 kcal', time: 'ca. 15 Minuten', diff: 'Leicht',
+    zutaten: ['1 Kopf grüner Salat','1 Apfel','1 Karotte','Eine Handvoll Walnüsse oder Sonnenblumenkerne','2 EL Apfelessig','3 EL Rapsöl','Salz & Pfeffer','1 TL Senf','Optional: Feta oder Bergkäse'],
+    zubereitung: ['Den Salat sorgfältig waschen und in grobe Stücke rupfen oder schneiden.','Apfel und Karotte in hauchdünne Scheiben schneiden oder fein raspeln.','Alle Zutaten in einer großen Schüssel zusammenführen.','Rapsöl, Apfelessig, Salz, Pfeffer und Senf in einem Schraubglas oder einer kleinen Schüssel zu einem Dressing verrühren und gleichmäßig über den Salat geben.','Walnüsse oder Sonnenblumenkerne darüberstreuen – wer möchte, kann auch noch etwas Feta oder Bergkäse darüber bröseln.']
+  },
+  kartoffelsalat: {
+    emoji: '🥔', title: 'Kartoffelsalat', kcal: '447 kcal', time: 'ca. 35 Minuten', diff: 'Leicht',
+    zutaten: ['650g Kartoffeln','2 Zweige Rosmarin','1 rote Zwiebel','3 EL Olivenöl, Salz & Pfeffer','200g Cherrytomaten','1 Paprikaschote','100g getrocknete Tomaten','80g Oliven','1 Bund Rucola','200g Feta'],
+    zubereitung: ['Die Kartoffeln ungeschält in reichlich Salzwasser 20–25 Minuten weich kochen. Abgießen, etwas abkühlen lassen, dann schälen und in Scheiben schneiden.','Cherrytomaten und Oliven halbieren, getrocknete Tomaten in feine Streifen schneiden. Die Zwiebel in kleine Würfel hacken, Rosmarin fein wiegen und den Rucola waschen.','Olivenöl mit Salz, Pfeffer und gehacktem Rosmarin zu einem einfachen Dressing verrühren.','Die noch warmen Kartoffelscheiben mit Tomaten, Oliven und Zwiebel in einer Schüssel vermengen, das Dressing darübergeben und alles 10 Minuten durchziehen lassen.','Zum Schluss den Rucola unterheben und den Feta in Stücken darüber verteilen.']
+  },
+  kurbispasta: {
+    emoji: '🎃', title: 'Kürbis Pasta', kcal: '384 kcal', time: 'ca. 40 Minuten', diff: 'Leicht',
+    zutaten: ['1½ kg Butternuss-Kürbis','2 Zwiebeln','2 Knoblauchzehen','1 EL Butter','1 EL Olivenöl','1 TL getrockneter Majoran','Salz & Pfeffer','3 Stiele Majoran','Joghurt','Blauschimmelkäse','Sahne & Brühe'],
+    zubereitung: ['Den Kürbis der Länge nach in feine Streifen (Nudeln) schneiden. Zwiebeln und Knoblauch in kleine Würfel hacken.','Butter und Olivenöl in einer großen Pfanne erhitzen. Zwiebeln und Knoblauch darin etwa 3 Minuten glasig dünsten. Die Kürbisnudeln zusammen mit dem Majoran dazugeben, 5 Minuten mitbraten und kräftig salzen und pfeffern.','Das Einweichwasser angießen und alles zugedeckt 3 Minuten dünsten lassen. Dann den Deckel abnehmen und weitere 3–5 Minuten offen fertig garen.','Blauschimmelkäse zusammen mit Joghurt, Sahne und etwas Brühe cremig aufmixen. Den Dip nach Geschmack würzen.','Die Kürbisnudeln in Schalen anrichten, den Dip dazugeben und mit frischem Pfeffer sowie Majoranblättchen abschließen.']
+  },
+  hahnchen: {
+    emoji: '🍋', title: 'Hähnchen mit Zitrone & Kartoffeln', kcal: '463 kcal', time: 'ca. 40 Minuten', diff: 'Leicht',
+    zutaten: ['4 Hähnchenbrustfilets (à 150g)','800g festkochende Kartoffeln','4 Möhren (à 100g)','½ Bio-Zitrone (Schale & Saft)','4 Zweige Rosmarin','½ Bund Petersilie','100g Grana Padano','3 EL Olivenöl','Salz & Pfeffer'],
+    zubereitung: ['Den Rosmarin fein hacken. Kartoffeln in gleichmäßige Scheiben, Möhren in Stifte schneiden.','Beides mit 2 EL Olivenöl, Salz, Pfeffer und dem Rosmarin vermengen und auf einem Backblech bei 220°C (Umluft 200°C) für 20–25 Minuten knusprig rösten.','Die Hähnchenfilets mit Zitronenschale, 2 EL Zitronensaft, dem restlichen Öl, Salz und Pfeffer einreiben. In der heißen Pfanne von jeder Seite 2 Minuten anbraten, dann im Ofen weitere 8–10 Minuten durchgaren lassen. Danach 5 Minuten ruhen lassen.','Petersilie fein hacken. 80g Grana Padano unter die noch heißen Kartoffeln mischen. Alles gemeinsam auf Tellern anrichten und mit Petersilie sowie dem restlichen Käse bestreuen.']
+  },
+  curry: {
+    emoji: '🍛', title: 'Gemüse-Kichererbsen-Curry', kcal: '397 kcal', time: 'ca. 50 Minuten', diff: 'Leicht',
+    zutaten: ['200g Kichererbsen','1 kleine Zwiebel','2 Knoblauchzehen','10g Ingwer','200g Knollensellerie','200g Vollkornreis','3 TL Erdnussöl','10g rote Currypaste','½ TL Kreuzkümmel, Koriander, Garam Masala, Kurkuma','300g stückige Tomaten','200g Tofu','5g schwarzer Sesam','Chilipulver','15g Mandelblättchen'],
+    zubereitung: ['Die Kichererbsen in einem Sieb abspülen und abtropfen lassen. Zwiebel, Knoblauch, Ingwer und Sellerie fein hacken bzw. würfeln. Den Reis nach Packungsanweisung kochen.','Das Erdnussöl in einem Topf erhitzen. Das Gemüse zusammen mit der Currypaste und allen Gewürzen etwa 2 Minuten anschwitzen. Kichererbsen und stückige Tomaten hinzufügen und alles 15–20 Minuten bei mittlerer Hitze köcheln lassen.','Den Tofu in Würfel schneiden und im übrigen Öl von allen Seiten etwa 5 Minuten kross anbraten. Unter das Curry mischen und weitere 5 Minuten mitkochen lassen.','Den Reis mit schwarzem Sesam verrühren, zusammen mit dem Curry anrichten und zum Abschluss mit Mandelblättchen bestreuen.']
+  },
+  teigtaschen: {
+    emoji: '🥟', title: 'Türkische Teigtaschen mit Joghurtdip', kcal: '568 kcal', time: 'ca. 40 Minuten', diff: 'Mittel',
+    zutaten: ['400g Dinkelmehl','3 EL Butter','1 Ei','Salz','200g Hackfleisch','1 Zwiebel','½ Bund Petersilie','300g Joghurt','1 EL Zitronensaft','1 TL Paprikapulver'],
+    zubereitung: ['Das Dinkelmehl zusammen mit 1 EL Butter und dem Ei in eine Schüssel geben und mit ca. 150ml lauwarmem Wasser zu einem glatten, elastischen Teig verkneten. Den Teig abgedeckt 30 Minuten ruhen lassen.','Die Petersilie fein hacken und die Zwiebel in sehr kleine Würfel schneiden. Beides mit dem Hackfleisch und Paprikapulver vermengen und die Füllung salzen.','Den Teig möglichst dünn ausrollen und in etwa 3 cm große Quadrate schneiden. Jeweils eine kleine Menge Füllung in die Mitte geben und die vier Ecken nach oben zur Mitte hin zusammenfalten.','Die Teigtaschen portionsweise in sprudelndem Salzwasser rund 4 Minuten garziehen lassen.','Den Joghurt mit Zitronensaft verrühren. Die übrige Butter schmelzen und das Paprikapulver einrühren.','Die fertigen Teigtaschen mit der Joghurtsauce und der Paprikabutter anrichten und sofort servieren.']
+  },
+  kurbissuppe: {
+    emoji: '🍜', title: 'Kürbissuppe mit Hokkaido', kcal: '406 kcal', time: 'ca. 25 Minuten', diff: 'Leicht',
+    zutaten: ['1 Hokkaido-Kürbis (800g)','2 Schalotten','1 Knoblauchzehe','15g Ingwer','3 EL Sesamöl','500ml Gemüsebrühe','400ml Kokosmilch','1 Orange','Sojasauce, Salz, Pfeffer, Muskat','4 EL Kürbiskerne & Kürbiskernöl','½ Bund Petersilie oder Koriander'],
+    zubereitung: ['Den Kürbis in grobe Stücke schneiden (4 EL davon beiseitelegen). Schalotten, Knoblauch und Ingwer fein hacken. 2 EL Sesamöl in einem großen Topf erhitzen und alles zusammen etwa 5 Minuten sanft andünsten.','Gemüsebrühe und Kokosmilch angießen und die Suppe würzen. Bei mittlerer Hitze 15–20 Minuten köcheln lassen, bis der Kürbis weich ist.','Die zurückgelegten Kürbiswürfel im restlichen Öl 5–7 Minuten von allen Seiten anbraten. Die Orange auspressen.','Die Suppe mit einem Stabmixer fein pürieren und mit Orangensaft, Sojasauce und einer Prise Muskat abschmecken.','Die Suppe in Schalen füllen, die gebratenen Kürbiswürfel, Kürbiskerne und etwas Kürbiskernöl darüber verteilen und mit frischen Kräutern garnieren.']
+  },
+  apfeltorte: {
+    emoji: '🥧', title: 'Apfeltorte mit Aprikosenglasur', kcal: '276 kcal', time: '45 Minuten', diff: 'Leicht',
+    zutaten: ['150g Dinkelmehl','150g Dinkelvollkornmehl','1 EL Honig','1 Prise Salz','200g Butter','1 Ei','1kg Äpfel','2 EL Aprikosenmarmelade'],
+    zubereitung: ['Beide Mehlsorten zusammen mit Honig, Salz, Butter und dem Ei rasch zu einem Mürbteig verkneten. Falls der Teig zu trocken ist, einen Schuss Wasser einarbeiten. Den Teig in Frischhaltefolie wickeln und 1 Stunde im Kühlschrank ruhen lassen.','Die Äpfel waschen, schälen und in gleichmäßige Spalten schneiden. Eine Tortenform mit dem ausgerollten Teig auslegen und den Boden mit einer Gabel mehrfach einstechen.','Die Apfelspalten überlappend wie Dachziegel auf dem Teig anordnen. Im vorgeheizten Ofen bei 220°C etwa 25 Minuten backen, bis die Torte schön goldbraun ist.','Die Aprikosenmarmelade mit einem Schuss Wasser in einem kleinen Topf aufkochen und die noch heiße Tarte damit gleichmäßig bestreichen.']
+  },
+  gemusechips: {
+    emoji: '🥕', title: 'Gemüsechips', kcal: '~70 kcal/100g', time: '30 Minuten', diff: 'Sehr leicht',
+    zutaten: ['Gemüse nach Wahl','1 EL Rapsöl','Salz','Gewürze nach Wahl'],
+    zubereitung: ['Das Gemüse mit einem Hobel oder Messer in möglichst dünne, gleichmäßige Scheiben schneiden.','Die Scheiben nebeneinander auf einem mit Backpapier belegten Backblech ausbreiten und dünn mit Rapsöl bestreichen.','Nach Wunsch würzen und bei 200°C Ober-/Unterhitze etwa 30 Minuten backen, bis die Chips knusprig und goldbraun sind.']
+  },
+  apfeltopfen: {
+    emoji: '🍎', title: 'Apfel-Topfen Snack', kcal: '200 kcal', time: '4 Minuten', diff: 'Sehr leicht',
+    zutaten: ['1 Apfel','150g Topfen','1 TL Honig oder Apfelmus'],
+    zubereitung: ['Das Apfelmus (oder alternativ den Honig) zum Topfen geben und alles gut miteinander verrühren, bis eine cremige Masse entsteht.','Den Apfel waschen und in dünne, gleichmäßige Scheiben schneiden.','Den Dip in eine kleine Schüssel füllen und gemeinsam mit den Apfelscheiben ansprechend anrichten.']
+  }
+};
+
+function openModal(id) {
+  const r = recipes[id];
+  if (!r) return;
+  document.getElementById('modal-content').innerHTML = `
+    <div style="text-align:center;font-size:3rem;margin-bottom:12px">${r.emoji}</div>
+    <h2>${r.title}</h2>
+    <div class="modal-meta">
+      <span class="badge kcal">${r.kcal}</span>
+      <span class="badge">⏱ ${r.time}</span>
+      <span class="badge">🟢 ${r.diff}</span>
+    </div>
+    <h4>Zutaten</h4>
+    <ul>${r.zutaten.map(z=>`<li>${z}</li>`).join('')}</ul>
+    <h4>Zubereitung</h4>
+    <ol>${r.zubereitung.map(s=>`<li>${s}</li>`).join('')}</ol>
+  `;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal')) closeModal();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
